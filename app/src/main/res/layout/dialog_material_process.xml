@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titleText"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:gravity="center"
+            android:textColor="@color/dialogTitleColor"
+            android:textSize="16dp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="2"
+                android:layout_marginRight="4dp"
+                android:gravity="center"
+                android:text="@string/addMaterialName"
+                android:textColor="@color/textColor"
+                android:textSize="14dp" />
+
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/materialNameEditText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:maxLines="1"
+                android:background="@android:color/transparent" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@color/barColor" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/addMaterialUnitPrice"
+                android:layout_marginRight="4dp"
+                android:background="@color/mainMaterialBlue"
+                android:textColor="@color/textColor"
+                android:textSize="14dp" />
+
+
+            <EditText
+                android:id="@+id/materialUnitPriceEditText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:maxLines="1"
+                android:inputType="numberDecimal"
+                android:background="@android:color/transparent" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@color/barColor" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/addMaterialWeight"
+                android:layout_marginRight="4dp"
+                android:background="@color/mainMaterialMint"
+                android:textColor="@color/textColor"
+                android:textSize="14dp" />
+
+
+            <EditText
+                android:id="@+id/materialWeightEditText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:maxLines="1"
+                android:inputType="numberDecimal"
+                android:background="@android:color/transparent" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@color/barColor" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="right"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="88dp"
+                android:layout_height="match_parent"
+                style="?android:attr/borderlessButtonStyle"
+                android:textColor="@color/textColor"
+                android:text="@string/cancel" />
+
+            <Button
+                android:id="@+id/materialDeleteButton"
+                android:layout_width="88dp"
+                android:layout_height="match_parent"
+                style="?android:attr/borderlessButtonStyle"
+                android:textColor="@color/textOrange"
+                android:text="@string/delete" />
+
+            <Button
+                android:id="@+id/materialAddButton"
+                android:layout_width="88dp"
+                android:layout_height="match_parent"
+                style="?android:attr/borderlessButtonStyle"
+                android:textColor="@color/menuBack"
+                android:text="@string/add" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">레시피 관리</string>
+    <string name="mainView">메인 화면</string>
+    <string name="processingMaterial">혼합 재료</string>
+    <string name="material">재료</string>
+    <string name="recipe">레시피</string>
+    <string name="add">추가</string>
+    <string name="delete">제거</string>
+    <string name="modify">수정</string>
+    <string name="cancel">취소</string>
+
+    <string name="processingMaterialAdd">혼합 재료 추가</string>
+
+    <string name="addMaterialName">추가할 재료명</string>
+    <string name="modifyMaterialName">수정할 재료명</string>
+    <string name="addMaterialUnitPrice">재료 단가</string>
+    <string name="addMaterialWeight">단일 용량</string>
+
+    <string name="usageMaterialWeight">사용할 재료양</string>
+    <string name="predictPrice">예상 금액</string>
+</resources>

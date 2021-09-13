@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="mainColor">#9573EC</color>
+    <color name="colorPrimary">#52C5F1</color>
+    <color name="colorPrimaryDark">#91D8F8</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+    <color name="barColor">#E1E1E1</color>
+    <color name="recyclerViewColor">#EAE9E9</color>
+    <color name="mainMaterialBlue">#4D7DACEA</color>
+    <color name="mainMaterialMint">#4D87E3B1</color>
+    <color name="mainMaterialOrange">#4DFAB54D</color>
+    <color name="materialTotalColor">#A5EEFA</color>
+    <color name="materialCountColor">#4DE6387D</color>
+    <color name="rightPurple">#CFC2FF</color>
+    <color name="lightGreen">#90EE90</color>
+    <color name="blackPurple">#2B1A68</color>
+    <color name="textColor">#515050</color>
+    <color name="textOrange">#FAB54D</color>
+    <color name="menuBack">#099F91</color>
+    <color name="brightRed">#F39999</color>
+
+    <color name="processingMaterialTitleColor">#6372C8</color>
+    <color name="dialogTitleColor">#434343</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="red">#9E0404</color>
+    <color name="rightGray">#CCC8C8</color>
+
+</resources>

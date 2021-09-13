@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name = "errorToastStyle">
+        <item name="stTextColor">@color/white</item>
+        <item name="stColorBackground">@color/red</item>
+    </style>
+
+    <style name="completeToastStyle">
+        <item name="stTextColor">@color/white</item>
+        <item name="stColorBackground">@color/colorAccent</item>
+    </style>
+
+    <style name="ProcessingMaterialTitleBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+    </style>
+</resources>
