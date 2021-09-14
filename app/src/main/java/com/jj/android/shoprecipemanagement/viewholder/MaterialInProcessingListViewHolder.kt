@@ -16,7 +16,7 @@ class MaterialInProcessingListViewHolder(private val binding: ItemProcessingMate
         item = dataDetail
         with(binding) {
             materialName.text = dataDetail.materialName
-            unitPricePerGram.text = String.format("%.2f", dataDetail.unitPrice)
+            unitPricePerGram.text = String.format("%.2f", dataDetail.unitPricePerGram)
             usage.text = dataDetail.usage.toString()
             totalPrice.text = String.format("%.2f", dataDetail.totalPrice)
         }

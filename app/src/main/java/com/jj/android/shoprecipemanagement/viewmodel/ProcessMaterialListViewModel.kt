@@ -1,7 +1,6 @@
 package com.jj.android.shoprecipemanagement.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jj.android.shoprecipemanagement.dao.MaterialDAO
 import com.jj.android.shoprecipemanagement.dao.ProcessingMDAO
@@ -11,11 +10,8 @@ import com.jj.android.shoprecipemanagement.database.ProcessingMDetailDataBase
 import com.jj.android.shoprecipemanagement.database.ProcessingMaterialDataBase
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingListData
 import com.jj.android.shoprecipemanagement.dto.MaterialData
-import com.jj.android.shoprecipemanagement.dto.ProcessingMDetailData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMaterialData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.jj.android.shoprecipemanagement.util.DatabaseCallUtil
 
 //외부 합성 재료 관련 데이터 처리
 class ProcessMaterialListViewModel : ViewModel()  {
@@ -46,16 +42,7 @@ class ProcessMaterialListViewModel : ViewModel()  {
     }
 
     fun getProcessingList(item : ProcessingMaterialData) {
-        val data = processMDetailDao.findByParentId(item.id)
-        val pData = ProcessingListData(item.id, item.name, 0.0,0,0.0)
-        data.forEach { processingData ->
-            pData.usage+=processingData.usage
-            materialList.find { it.name == processingData.materialName }
-                ?.apply {
-                    pData.unitPricePerGram += this.unitPricePerGram
-                    pData.price+= this.unitPricePerGram*processingData.usage
-                }
-        }
+        val pData = DatabaseCallUtil.calculateProcessingData(item)
         processDataList.add(pData)
     }
 

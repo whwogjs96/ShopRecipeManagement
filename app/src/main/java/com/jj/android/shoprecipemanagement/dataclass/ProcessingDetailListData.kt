@@ -4,7 +4,7 @@ data class ProcessingDetailListData(
     var id : Int,
     var materialName: String,
     var usage : Int,
-    var unitPrice : Double,
+    var unitPricePerGram : Double,
     var totalPrice : Double,
     var type : Int,
     var index : Int

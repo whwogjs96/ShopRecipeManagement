@@ -16,10 +16,7 @@ import com.jj.android.shoprecipemanagement.dataclass.ProcessingDetailListData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMDetailData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMaterialData
 import com.muddzdev.styleabletoast.StyleableToast
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.lang.NullPointerException
 
 //합성 재료 내부 리스트 처리
@@ -45,13 +42,13 @@ class ProcessingDetailListViewModel: ViewModel() {
         dataList.add(dataDetail)
     }
 
-    fun getDataById() : ProcessingMaterialData {
+    fun getDataById() : ProcessingMaterialData? {
         return processMaterialDao.findById(processingMaterialId)
     }
 
     fun dataModify(context : Context, position : Int, item : ProcessingDetailListData) {
         dataList.find { it.materialName == item.materialName }.run {
-            dataList.set(position, item)
+            dataList[position] = item
             StyleableToast.makeText(context, "재료가 수정되었습니다.", Toast.LENGTH_SHORT, R.style.completeToastStyle).show()
         }
     }
@@ -76,6 +73,13 @@ class ProcessingDetailListViewModel: ViewModel() {
                 } else {
                     processMDetailDao.delete(item)
                 }
+            } else {
+                val data = processMaterialDao.findByName(item.materialName)
+                if(data != null) {
+                    //일단 여기에 합성재료를 더하면 됩니다.
+                } else {
+                    processMDetailDao.delete(item)
+                }
             }
         }
         dataList.sortBy { it.index }
@@ -87,7 +91,7 @@ class ProcessingDetailListViewModel: ViewModel() {
                 try {
                     if(processingMaterialId == 0) { //추가인 경우
                         processMaterialDao.insert(ProcessingMaterialData(0,name))
-                        val insertedData = processMaterialDao.findByName(name)
+                        val insertedData = processMaterialDao.findByName(name)!!
                         var index = 0
                         dataList.forEach {
                             index++
@@ -104,55 +108,40 @@ class ProcessingDetailListViewModel: ViewModel() {
                             resultAction()
                         }
                     } else { //수정인 경우
-                        val modifyResult = processMaterialDao.findByName(name)
-                        Log.e("modify", modifyResult.toString())
                         try {
-                            if(modifyResult.id != processingMaterialId) {
+                            val modifyResult = processMaterialDao.findByName(name)
+                            if (modifyResult != null) {
+                                if(modifyResult.id != processingMaterialId) {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        StyleableToast.makeText(context, "이름은 중복되면 안됩니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                                    }
+                                    return@launch
+                                }
+                            } else {
                                 processMaterialDao.update(ProcessingMaterialData(processingMaterialId, name))
                             }
                         } catch (e: NullPointerException) {
                             e.printStackTrace()
-                            CoroutineScope(Dispatchers.Main).launch {
-                                StyleableToast.makeText(context, "이름은 중복되면 안됩니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
-                            }
-                            return@launch
+                            StyleableToast.makeText(context, "문제가 발생했습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
                         }
-
                         var index = 0;
                         dataList.forEach {
-                            Log.e("우랴랴랴", ProcessingMDetailData(
-                                id = 0,
+                            index++
+                            val insertData = ProcessingMDetailData(
+                                id = it.id,
                                 processingMId = processingMaterialId,
                                 materialName = it.materialName,
                                 type = it.type,
                                 usage = it.usage,
                                 index = index
-                            ).toString())
-                            index++
+                            )
                             val data = processMDetailDao.findById(it.id)
-                            Log.e("확인작업", data.toString())
                             if(data != null) {
-                                processMDetailDao.update(ProcessingMDetailData(
-                                    id = it.id,
-                                    processingMId = processingMaterialId,
-                                    materialName = it.materialName,
-                                    type = it.type,
-                                    usage = it.usage,
-                                    index = index
-                                ))
+                                processMDetailDao.update(insertData)
                             } else {
-                                processMDetailDao.insert(ProcessingMDetailData(
-                                    id = 0,
-                                    processingMId = processingMaterialId,
-                                    materialName = it.materialName,
-                                    type = it.type,
-                                    usage = it.usage,
-                                    index = index
-                                ))
+                                processMDetailDao.insert(insertData)
                             }
                         }
-
-                        Log.e("여기까지 확인", dataList.toString())
                         CoroutineScope(Dispatchers.Main).launch  {
                             resultAction()
                         }
@@ -171,9 +160,17 @@ class ProcessingDetailListViewModel: ViewModel() {
 
     fun processDataDelete(context: Context) {
         CoroutineScope(Dispatchers.Default).launch{
-            processMDetailDao.deleteByParentId(processingMaterialId)
-            processMaterialDao.delete(ProcessingMaterialData(processingMaterialId, ""))
+            try {
+                processMDetailDao.deleteByParentId(processingMaterialId)
+                processMaterialDao.delete(ProcessingMaterialData(processingMaterialId, ""))
+                CoroutineScope(Dispatchers.Main).launch {
+                    StyleableToast.makeText(context, "재료의 삭제가 완료되었습니다.", Toast.LENGTH_SHORT, R.style.completeToastStyle).show()
+                }
+            } catch (e: Exception) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    StyleableToast.makeText(context, "재료를 삭제하는데 실패했습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                }
+            }
         }
-        StyleableToast.makeText(context, "재료의 삭제가 완료되었습니다.", Toast.LENGTH_SHORT, R.style.completeToastStyle).show()
     }
 }

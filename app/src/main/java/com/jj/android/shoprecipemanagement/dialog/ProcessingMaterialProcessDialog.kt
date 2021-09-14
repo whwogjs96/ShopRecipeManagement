@@ -18,6 +18,7 @@ import com.jj.android.shoprecipemanagement.databinding.DialogProcessingMaterialP
 import com.jj.android.shoprecipemanagement.dto.MaterialData
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingDetailListData
 import com.jj.android.shoprecipemanagement.result.ProcessingMaterialDialogResult
+import com.jj.android.shoprecipemanagement.util.DatabaseCallUtil
 import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,7 @@ class ProcessingMaterialProcessDialog(context: Context, val mode: Int, val dataD
 
     private lateinit var binding : DialogProcessingMaterialProcessBinding
     lateinit var dialogResult : ProcessingMaterialDialogResult
-    private var selectedPosition = -1;
+    private var selectedPosition = -1
     var materialList = ArrayList<MaterialData>()
     lateinit var materialDao: MaterialDAO
     var materialSize = 0
@@ -47,6 +48,14 @@ class ProcessingMaterialProcessDialog(context: Context, val mode: Int, val dataD
         CoroutineScope(Dispatchers.Default).launch{
             materialList.addAll(materialDao.getAll())
             materialSize = materialList.size
+            DatabaseCallUtil.getProcessMaterialList().forEach {
+                materialList.add(MaterialData(
+                    it.name,
+                    0,
+                    0,
+                    it.unitPricePerGram
+                ))
+            }
             withContext(Dispatchers.Main) {
                 binding.materialListSpinner.adapter = MaterialListSpinnerAdapter(context, materialList)
                 binding.materialListSpinner.onItemSelectedListener = this@ProcessingMaterialProcessDialog
@@ -54,8 +63,6 @@ class ProcessingMaterialProcessDialog(context: Context, val mode: Int, val dataD
                 modeSetting()
             }
         }
-
-
     }
 
     private fun setEvent() {
@@ -70,14 +77,14 @@ class ProcessingMaterialProcessDialog(context: Context, val mode: Int, val dataD
             binding.materialAddButton -> {
                 try {
                     val usage : Int = binding.inputUsage.text.toString().toInt()
-                    val unitPricePerGram = materialList.get(selectedPosition).unitPricePerGram
+                    val unitPricePerGram = materialList[selectedPosition].unitPricePerGram
                     dialogResult.finish(
                         ProcessingDetailListData(
                             id = dataDetail?.id ?: 0,
-                            materialName = materialList.get(selectedPosition).name,
-                            type = if(materialSize >= selectedPosition) 1 else 2,
+                            materialName = materialList[selectedPosition].name,
+                            type = if(materialSize > selectedPosition) 1 else 2,
                             usage = usage,
-                            unitPrice = unitPricePerGram,
+                            unitPricePerGram = unitPricePerGram,
                             totalPrice = usage * unitPricePerGram,
                             index = 0
                         )

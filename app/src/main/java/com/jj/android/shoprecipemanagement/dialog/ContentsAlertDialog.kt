@@ -17,7 +17,7 @@ class ContentsAlertDialog(context: Context) : AlertDialog(context), View.OnClick
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         binding.alertCancelButton.setOnClickListener(this)
-        binding.alertCancelButton.setOnClickListener(this)
+        binding.alertDoneButton.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {

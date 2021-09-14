@@ -45,7 +45,7 @@ class ProcessingMaterialProcessFragment : CommonFragment<FragmentProcessingMater
                 processingDetailListViewModel.getDetailDataList(processingDetailListViewModel.processingMaterialId)
                 CoroutineScope(Dispatchers.Main).launch {
                     binding.processingMDetailRecyclerView.adapter?.notifyDataSetChanged()
-                    binding.processingMaterialNameView.setText(data.name)
+                    binding.processingMaterialNameView.setText(data?.name?:"")
                 }
             }
             binding.addButton.text = getString(R.string.modify)
@@ -68,8 +68,18 @@ class ProcessingMaterialProcessFragment : CommonFragment<FragmentProcessingMater
                 val dialog = ProcessingMaterialProcessDialog(binding.root.context, 1)
                 dialog.setResult(object : ProcessingMaterialDialogResult {
                     override fun finish(dataDetail: ProcessingDetailListData) {
-                        processingDetailListViewModel.dataAdd(dataDetail)
-                        binding.processingMDetailRecyclerView.adapter?.notifyDataSetChanged()
+                        CoroutineScope(Dispatchers.Default).launch {
+                            val data = processingDetailListViewModel.getDataById()
+                            CoroutineScope(Dispatchers.Main).launch {
+                                Log.e("뭐가 문제지?", dataDetail.toString())
+                                if(data != null && data.name == dataDetail.materialName && dataDetail.type == 2) {
+                                    StyleableToast.makeText(context?: return@launch, "현재 재료는 재료로 추가할 수 없습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                                } else {
+                                    processingDetailListViewModel.dataAdd(dataDetail)
+                                }
+                                binding.processingMDetailRecyclerView.adapter?.notifyDataSetChanged()
+                            }
+                        }
                     }
                 })
                 dialog.show()
@@ -90,7 +100,16 @@ class ProcessingMaterialProcessFragment : CommonFragment<FragmentProcessingMater
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun materialModifyEvent(event: ProcessingMaterialModifyEvent) {
-        processingDetailListViewModel.dataModify(context?:return, event.position, event.dataDetail)
-        binding.processingMDetailRecyclerView.adapter?.notifyItemChanged(event.position)
+        CoroutineScope(Dispatchers.Default).launch {
+            val data = processingDetailListViewModel.getDataById()
+            CoroutineScope(Dispatchers.Main).launch {
+                if(data != null && data.name == event.dataDetail.materialName && event.dataDetail.type == 2) {
+                    StyleableToast.makeText(context?: return@launch, "현재 재료는 재료로 추가할 수 없습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                } else {
+                    processingDetailListViewModel.dataModify(context?: return@launch, event.position, event.dataDetail)
+                    binding.processingMDetailRecyclerView.adapter?.notifyItemChanged(event.position)
+                }
+            }
+        }
     }
 }

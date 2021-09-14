@@ -16,10 +16,10 @@ interface ProcessingMDAO {
     fun getAll(): List<ProcessingMaterialData>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE name=:name")
-    fun findByName(name: String) : ProcessingMaterialData
+    fun findByName(name: String) : ProcessingMaterialData?
 
     @Query("SELECT * FROM $TABLE_NAME WHERE id=:id")
-    fun findById(id: Int) : ProcessingMaterialData
+    fun findById(id: Int) : ProcessingMaterialData?
 
     @Insert
     fun insert(item: ProcessingMaterialData)
