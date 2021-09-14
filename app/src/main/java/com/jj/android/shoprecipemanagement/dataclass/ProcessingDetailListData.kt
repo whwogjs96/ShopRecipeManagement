@@ -6,5 +6,6 @@ data class ProcessingDetailListData(
     var usage : Int,
     var unitPrice : Double,
     var totalPrice : Double,
-    var type : Int
+    var type : Int,
+    var index : Int
 )

@@ -41,6 +41,7 @@ class ProcessingDetailListViewModel: ViewModel() {
     }
 
     fun dataAdd(dataDetail: ProcessingDetailListData) {
+        if(dataDetail.index == 0) dataDetail.index = dataList.size+1
         dataList.add(dataDetail)
     }
 
@@ -68,7 +69,8 @@ class ProcessingDetailListViewModel: ViewModel() {
                             item.usage,
                             data.unitPricePerGram,
                             data.unitPricePerGram * item.usage,
-                            item.type
+                            item.type,
+                            item.index
                         )
                     )
                 } else {
@@ -76,7 +78,7 @@ class ProcessingDetailListViewModel: ViewModel() {
                 }
             }
         }
-        Log.e("???", list.toString())
+        dataList.sortBy { it.index }
     }
 
     fun processingDataSave(context: Context, name: String, resultAction : () -> Unit) {
@@ -103,16 +105,30 @@ class ProcessingDetailListViewModel: ViewModel() {
                         }
                     } else { //수정인 경우
                         val modifyResult = processMaterialDao.findByName(name)
+                        Log.e("modify", modifyResult.toString())
                         try {
                             if(modifyResult.id != processingMaterialId) {
                                 processMaterialDao.update(ProcessingMaterialData(processingMaterialId, name))
                             }
                         } catch (e: NullPointerException) {
-                            processMaterialDao.update(ProcessingMaterialData(processingMaterialId, name))
+                            e.printStackTrace()
+                            CoroutineScope(Dispatchers.Main).launch {
+                                StyleableToast.makeText(context, "이름은 중복되면 안됩니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                            }
+                            return@launch
                         }
+
                         var index = 0;
                         dataList.forEach {
-                            index = 1
+                            Log.e("우랴랴랴", ProcessingMDetailData(
+                                id = 0,
+                                processingMId = processingMaterialId,
+                                materialName = it.materialName,
+                                type = it.type,
+                                usage = it.usage,
+                                index = index
+                            ).toString())
+                            index++
                             val data = processMDetailDao.findById(it.id)
                             Log.e("확인작업", data.toString())
                             if(data != null) {
@@ -135,14 +151,16 @@ class ProcessingDetailListViewModel: ViewModel() {
                                 ))
                             }
                         }
+
                         Log.e("여기까지 확인", dataList.toString())
                         CoroutineScope(Dispatchers.Main).launch  {
                             resultAction()
                         }
                     }
                 } catch (e: SQLiteConstraintException) {
+                    e.printStackTrace()
                     CoroutineScope(Dispatchers.Main).launch {
-                        StyleableToast.makeText(context, "이름은 중복되면 안됩니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                        StyleableToast.makeText(context, "재료 저장에 실패했습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
                     }
                 }
             }

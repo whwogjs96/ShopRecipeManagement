@@ -22,6 +22,9 @@
     <color name="menuBack">#099F91</color>
     <color name="brightRed">#F39999</color>
 
+    <color name="cancelButtonColor">#BF3333</color>
+
+
     <color name="processingMaterialTitleColor">#6372C8</color>
     <color name="dialogTitleColor">#434343</color>
 

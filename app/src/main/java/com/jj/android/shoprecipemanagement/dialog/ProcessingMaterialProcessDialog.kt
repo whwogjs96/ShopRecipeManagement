@@ -78,7 +78,8 @@ class ProcessingMaterialProcessDialog(context: Context, val mode: Int, val dataD
                             type = if(materialSize >= selectedPosition) 1 else 2,
                             usage = usage,
                             unitPrice = unitPricePerGram,
-                            totalPrice = usage * unitPricePerGram
+                            totalPrice = usage * unitPricePerGram,
+                            index = 0
                         )
                     )
 
