@@ -8,7 +8,7 @@ import androidx.room.ForeignKey.CASCADE
     indices = [Index(value = arrayOf("processingMId"))],
     foreignKeys = [
         ForeignKey(
-            entity = ProcessingMDetailData::class,
+            entity = ProcessingMaterialData::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("processingMId"),
             onDelete = CASCADE

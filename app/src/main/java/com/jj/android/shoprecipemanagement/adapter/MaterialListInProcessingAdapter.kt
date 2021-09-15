@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jj.android.shoprecipemanagement.R
-import com.jj.android.shoprecipemanagement.database.ProcessingMDetailDataBase
+import com.jj.android.shoprecipemanagement.database.ProcessingMaterialDataBase
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingDetailListData
 import com.jj.android.shoprecipemanagement.dialog.ContentsAlertDialog
 import com.jj.android.shoprecipemanagement.dto.ProcessingMDetailData
@@ -59,8 +59,7 @@ class MaterialListInProcessingAdapter(
             CoroutineScope(Dispatchers.Default).launch {
                 try {
                     if (data.id != 0) {
-                        val detailDb = ProcessingMDetailDataBase.getInstance(context)!!
-                        val processMDetailDao = detailDb.processingMDetailDao()
+                        val processMDetailDao = ProcessingMaterialDataBase.getInstance(context)!!.processingMDetailDao()
                         processMDetailDao.delete(
                             ProcessingMDetailData(
                                 id = data.id,
@@ -74,13 +73,13 @@ class MaterialListInProcessingAdapter(
                     }
                     CoroutineScope(Dispatchers.Main).launch {
                         dataDetailList.removeAt(position)
-                        StyleableToast.makeText(context, "제거되었습니다.", Toast.LENGTH_SHORT).show()
+                        StyleableToast.makeText(context, "제거되었습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
                         notifyItemRemoved(position)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     CoroutineScope(Dispatchers.Main).launch {
-                        StyleableToast.makeText(context, "제거에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        StyleableToast.makeText(context, "제거에 실패했습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
                     }
                 }
             }

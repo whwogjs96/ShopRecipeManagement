@@ -10,7 +10,6 @@ import com.jj.android.shoprecipemanagement.dao.MaterialDAO
 import com.jj.android.shoprecipemanagement.dao.ProcessingMDAO
 import com.jj.android.shoprecipemanagement.dao.ProcessingMDetailDAO
 import com.jj.android.shoprecipemanagement.database.MaterialDataBase
-import com.jj.android.shoprecipemanagement.database.ProcessingMDetailDataBase
 import com.jj.android.shoprecipemanagement.database.ProcessingMaterialDataBase
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingDetailListData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMDetailData
@@ -31,8 +30,7 @@ class ProcessingDetailListViewModel: ViewModel() {
     fun initDAO(context: Context) {
         val db = ProcessingMaterialDataBase.getInstance(context)!!
         processMaterialDao = db.processingMaterialDao()
-        val detailDb = ProcessingMDetailDataBase.getInstance(context)!!
-        processMDetailDao = detailDb.processingMDetailDao()
+        processMDetailDao = db.processingMDetailDao()
         val materialDB = MaterialDataBase.getInstance(context)!!
         materialDao = materialDB.materialDao()
     }
@@ -161,7 +159,6 @@ class ProcessingDetailListViewModel: ViewModel() {
     fun processDataDelete(context: Context) {
         CoroutineScope(Dispatchers.Default).launch{
             try {
-                processMDetailDao.deleteByParentId(processingMaterialId)
                 processMaterialDao.delete(ProcessingMaterialData(processingMaterialId, ""))
                 CoroutineScope(Dispatchers.Main).launch {
                     StyleableToast.makeText(context, "재료의 삭제가 완료되었습니다.", Toast.LENGTH_SHORT, R.style.completeToastStyle).show()

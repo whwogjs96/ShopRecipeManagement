@@ -36,12 +36,11 @@ class MaterialListViewModel : ViewModel() {
         CoroutineScope(Dispatchers.Default).launch {
             materialDao.insert(item)
         }
-
     }
 
     fun dataModify(context: Context, position : Int, item: MaterialData) {
         dataList.find { it.name == item.name }.run {
-            dataList.set(position, item)
+            dataList[position] = item
             CoroutineScope(Dispatchers.Default).launch {
                 materialDao.update(item)
             }

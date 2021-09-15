@@ -1,12 +1,12 @@
 package com.jj.android.shoprecipemanagement.util
 
 import android.content.Context
+import android.util.Log
 import com.jj.android.shoprecipemanagement.application.App
 import com.jj.android.shoprecipemanagement.dao.MaterialDAO
 import com.jj.android.shoprecipemanagement.dao.ProcessingMDAO
 import com.jj.android.shoprecipemanagement.dao.ProcessingMDetailDAO
 import com.jj.android.shoprecipemanagement.database.MaterialDataBase
-import com.jj.android.shoprecipemanagement.database.ProcessingMDetailDataBase
 import com.jj.android.shoprecipemanagement.database.ProcessingMaterialDataBase
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingListData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMaterialData
@@ -20,8 +20,7 @@ object DatabaseCallUtil {
     init {
         val db = ProcessingMaterialDataBase.getInstance(App.context())!!
         processMaterialDao = db.processingMaterialDao()
-        val detailDb = ProcessingMDetailDataBase.getInstance(App.context())!!
-        processMDetailDao = detailDb.processingMDetailDao()
+        processMDetailDao = db.processingMDetailDao()
         val materialDB = MaterialDataBase.getInstance(App.context())!!
         materialDao = materialDB.materialDao()
     }
@@ -45,8 +44,9 @@ object DatabaseCallUtil {
                 val data = processMaterialDao.findByName(detailData.materialName)
                 if(data != null) {
                     val processData = calculateProcessingData(data)
-                    resultData.usage += processData.usage
-                    resultData.price += processData.price
+                    Log.e("여기다!", processData.toString())
+                    resultData.usage += detailData.usage
+                    resultData.price += processData.unitPricePerGram*detailData.usage
                 } else {
                     processMDetailDao.delete(detailData)
                 }
