@@ -14,6 +14,7 @@ import com.jj.android.shoprecipemanagement.database.ProcessingMaterialDataBase
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingDetailListData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMDetailData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMaterialData
+import com.jj.android.shoprecipemanagement.util.DatabaseCallUtil
 import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.*
 import java.lang.NullPointerException
@@ -74,6 +75,18 @@ class ProcessingDetailListViewModel: ViewModel() {
             } else {
                 val data = processMaterialDao.findByName(item.materialName)
                 if(data != null) {
+                    val addedItem = DatabaseCallUtil.calculateProcessingData(data)
+                    dataAdd(
+                            ProcessingDetailListData(
+                                    addedItem.id,
+                                    addedItem.name,
+                                    item.usage,
+                                    addedItem.unitPricePerGram,
+                                    addedItem.unitPricePerGram * item.usage,
+                                    item.type,
+                                    item.index
+                            )
+                    )
                     //일단 여기에 합성재료를 더하면 됩니다.
                 } else {
                     processMDetailDao.delete(item)
@@ -102,12 +115,9 @@ class ProcessingDetailListViewModel: ViewModel() {
                                 index = index
                             ))
                         }
-                        CoroutineScope(Dispatchers.Main).launch  {
-                            resultAction()
-                        }
                     } else { //수정인 경우
                         try {
-                            val modifyResult = processMaterialDao.findByName(name)
+                            val modifyResult = processMaterialDao.findByName(name)// 같은 이름의 재료가 존재하는지 판단
                             if (modifyResult != null) {
                                 if(modifyResult.id != processingMaterialId) {
                                     CoroutineScope(Dispatchers.Main).launch {
@@ -121,8 +131,9 @@ class ProcessingDetailListViewModel: ViewModel() {
                         } catch (e: NullPointerException) {
                             e.printStackTrace()
                             StyleableToast.makeText(context, "문제가 발생했습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                            return@launch
                         }
-                        var index = 0;
+                        var index = 0
                         dataList.forEach {
                             index++
                             val insertData = ProcessingMDetailData(
@@ -140,9 +151,9 @@ class ProcessingDetailListViewModel: ViewModel() {
                                 processMDetailDao.insert(insertData)
                             }
                         }
-                        CoroutineScope(Dispatchers.Main).launch  {
-                            resultAction()
-                        }
+                    }
+                    CoroutineScope(Dispatchers.Main).launch  {
+                        resultAction()
                     }
                 } catch (e: SQLiteConstraintException) {
                     e.printStackTrace()
@@ -157,7 +168,7 @@ class ProcessingDetailListViewModel: ViewModel() {
     }
 
     fun processDataDelete(context: Context) {
-        CoroutineScope(Dispatchers.Default).launch{
+        CoroutineScope(Dispatchers.Default).launch {
             try {
                 processMaterialDao.delete(ProcessingMaterialData(processingMaterialId, ""))
                 CoroutineScope(Dispatchers.Main).launch {

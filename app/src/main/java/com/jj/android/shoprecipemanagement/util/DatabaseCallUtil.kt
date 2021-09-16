@@ -44,7 +44,6 @@ object DatabaseCallUtil {
                 val data = processMaterialDao.findByName(detailData.materialName)
                 if(data != null) {
                     val processData = calculateProcessingData(data)
-                    Log.e("여기다!", processData.toString())
                     resultData.usage += detailData.usage
                     resultData.price += processData.unitPricePerGram*detailData.usage
                 } else {
