@@ -12,7 +12,6 @@ import androidx.navigation.Navigation
 import com.jj.android.shoprecipemanagement.R
 import com.jj.android.shoprecipemanagement.databinding.FragmentProcessingMaterialListBinding
 import com.jj.android.shoprecipemanagement.viewmodel.ProcessMaterialListViewModel
-import com.jj.android.shoprecipemanagement.viewmodel.ProcessingDetailListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,6 +33,13 @@ class ProcessingMaterialFragment : CommonFragment<FragmentProcessingMaterialList
         binding.processingMaterialAddButton.setOnClickListener(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(processingListViewModel.isDataUpdatable) {
+            dataRefresh()
+        }
+    }
+
     override fun onClick(v: View?) {
         when(v) {
             binding.processingMaterialAddButton -> {
@@ -46,6 +52,7 @@ class ProcessingMaterialFragment : CommonFragment<FragmentProcessingMaterialList
         CoroutineScope(Dispatchers.Default).launch {
             processingListViewModel.getList()
             withContext(Dispatchers.Main) {
+                processingListViewModel.isDataUpdatable = false
                 binding.processingMaterialRecyclerView.adapter?.notifyDataSetChanged()
             }
         }

@@ -14,16 +14,19 @@ import com.jj.android.shoprecipemanagement.eventbus.MaterialDeleteEvent
 import com.jj.android.shoprecipemanagement.eventbus.MaterialModifyEvent
 import com.jj.android.shoprecipemanagement.result.MaterialDialogResult
 import com.jj.android.shoprecipemanagement.viewmodel.MaterialListViewModel
+import com.jj.android.shoprecipemanagement.viewmodel.ProcessMaterialListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class MaterialListFragment: CommonFragment<FragmentMaterialListBinding>(R.layout.fragment_material_list), View.OnClickListener{
 
     private val materialListViewModel : MaterialListViewModel by activityViewModels()
+    private val processingListViewModel : ProcessMaterialListViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,15 +70,31 @@ class MaterialListFragment: CommonFragment<FragmentMaterialListBinding>(R.layout
         }
     }
 
+    /**
+     * 다른 프래그먼트의 값이 변경되어야 하는 경우 이 코드를 사용
+     * 이 코드에 다른 프래그먼트 변경을 알려주는 코드 작성
+     */
+    private fun fragmentUpdateNotify() {
+        processingListViewModel.isDataUpdatable = true
+    }
+
+    /**
+     * 재료 내용 변경
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun materialModifyEvent(event: MaterialModifyEvent) {
         materialListViewModel.dataModify(context?:return, event.position, event.data)
+        fragmentUpdateNotify()
         binding.materialRecyclerView.adapter?.notifyItemChanged(event.position)
     }
 
+    /**
+     * 재료 내용 삭제
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun materialDeleteEvent(event: MaterialDeleteEvent) {
         materialListViewModel.dataDelete(context?:return, event.data)
+        fragmentUpdateNotify()
         binding.materialRecyclerView.adapter?.notifyDataSetChanged()
     }
 }

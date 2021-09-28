@@ -21,6 +21,7 @@ class ProcessMaterialListViewModel : ViewModel()  {
     var dataList = ArrayList<ProcessingMaterialData>()
     var processDataList = ArrayList<ProcessingListData>()
     var materialList = ArrayList<MaterialData>()
+    var isDataUpdatable = false
 
     fun initDAO(context: Context) {
         val db = ProcessingMaterialDataBase.getInstance(context)!!
