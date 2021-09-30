@@ -7,42 +7,75 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingRight="4dp"
+        android:paddingLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@android:color/white"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/processingMaterialName"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="8dp"
-            android:textColor="@android:color/black"
-            android:gravity="center"
-            android:text="T-55(선인)"
-            android:textSize="15dp" />
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/recipeName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:padding="8dp"
+                android:textColor="@android:color/black"
+                android:ellipsize ="end"
+                android:gravity="center"
+                android:text="T-55(선인)"
+                android:textSize="15dp"
+                android:maxLines="1" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/recipeMaterialCount"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:textColor="@color/textColor"
+                android:background="@drawable/bg_round_material_count"
+                android:gravity="center"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="재료 n번 사용"
+                android:textSize="12dp" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="4dp"
-                android:background="@drawable/bg_round_unit_price"
+                android:background="@drawable/bg_round_unit_per_gram"
                 android:orientation="horizontal">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="단가 :"
+                    android:text="단가(1g) :"
                     android:textColor="@color/textColor"
                     android:textSize="12dp" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/unitPricePerGram"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -52,26 +85,26 @@
                     android:textColor="@color/textColor"
                     android:textSize="12dp" />
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.1"
                 android:padding="4dp"
                 android:layout_marginRight="2dp"
                 android:layout_marginLeft="2dp"
-                android:background="@drawable/bg_round_total_price"
+                android:background="@drawable/bg_round_recipe_weight"
                 android:orientation="horizontal">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="총 사용량 :"
+                    android:text="사용량 :"
                     android:textColor="@color/textColor"
                     android:textSize="12dp" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/usage"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -81,24 +114,24 @@
                     android:textColor="@color/textColor"
                     android:textSize="12dp" />
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="4dp"
-                android:background="@drawable/bg_round_material_count"
+                android:background="@drawable/bg_round_total_price"
                 android:orientation="horizontal">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="재료 수 :"
+                    android:text="금액 :"
                     android:textColor="@color/textColor"
                     android:textSize="12dp" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/totalPrice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -108,8 +141,8 @@
                     android:textColor="@color/textColor"
                     android:textSize="12dp" />
 
-            </LinearLayout>
-        </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

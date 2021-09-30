@@ -4,7 +4,7 @@ import androidx.room.*
 import com.jj.android.shoprecipemanagement.dto.ProcessingMaterialData
 
 /**
- * 여기가 합성재료의 이름을 저장하는 공간
+ * 여기가 혼합재료의 이름을 저장하는 공간
  */
 @Dao
 interface ProcessingMDAO {

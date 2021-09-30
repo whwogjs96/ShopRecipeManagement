@@ -19,7 +19,7 @@ import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.*
 import java.lang.NullPointerException
 
-//합성 재료 내부 리스트 처리
+//혼합 재료 내부 리스트 처리
 class ProcessingDetailListViewModel: ViewModel() {
 
     lateinit var processMaterialDao : ProcessingMDAO
@@ -87,7 +87,7 @@ class ProcessingDetailListViewModel: ViewModel() {
                                     item.index
                             )
                     )
-                    //일단 여기에 합성재료를 더하면 됩니다.
+                    //일단 여기에 혼합재료를 더하면 됩니다.
                 } else {
                     processMDetailDao.delete(item)
                 }

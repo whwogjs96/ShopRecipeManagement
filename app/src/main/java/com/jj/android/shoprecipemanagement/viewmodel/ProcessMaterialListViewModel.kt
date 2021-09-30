@@ -12,7 +12,7 @@ import com.jj.android.shoprecipemanagement.dto.MaterialData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMaterialData
 import com.jj.android.shoprecipemanagement.util.DatabaseCallUtil
 
-//외부 합성 재료 관련 데이터 처리
+//외부 혼합 재료 관련 데이터 처리
 class ProcessMaterialListViewModel : ViewModel()  {
 
     lateinit var processMaterialDao : ProcessingMDAO

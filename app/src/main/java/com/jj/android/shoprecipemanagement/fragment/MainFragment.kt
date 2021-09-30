@@ -21,7 +21,7 @@ class MainFragment :CommonFragment<FragmentMainBinding>(R.layout.fragment_main) 
     private val tabList: MutableList<Fragment> = ArrayList()
     private var tabNameList : ArrayList<String> = ArrayList<String>().apply {
         add("원가표")
-        add("합성 재료")
+        add("혼합 재료")
         add("레시피")
     }
 
