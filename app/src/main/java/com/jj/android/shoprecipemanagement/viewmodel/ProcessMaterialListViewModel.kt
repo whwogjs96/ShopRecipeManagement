@@ -1,6 +1,7 @@
 package com.jj.android.shoprecipemanagement.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jj.android.shoprecipemanagement.dao.MaterialDAO
 import com.jj.android.shoprecipemanagement.dao.ProcessingMDAO
@@ -15,18 +16,12 @@ import com.jj.android.shoprecipemanagement.util.DatabaseCallUtil
 //외부 혼합 재료 관련 데이터 처리
 class ProcessMaterialListViewModel : ViewModel()  {
 
-    lateinit var processMaterialDao : ProcessingMDAO
-    lateinit var processMDetailDao : ProcessingMDetailDAO
     lateinit var materialDao: MaterialDAO
-    var dataList = ArrayList<ProcessingMaterialData>()
     var processDataList = ArrayList<ProcessingListData>()
     var materialList = ArrayList<MaterialData>()
     var isDataUpdatable = false
 
     fun initDAO(context: Context) {
-        val db = ProcessingMaterialDataBase.getInstance(context)!!
-        processMaterialDao = db.processingMaterialDao()
-        processMDetailDao = db.processingMDetailDao()
         val materialDB = MaterialDataBase.getInstance(context)!!
         materialDao = materialDB.materialDao()
     }
@@ -34,20 +29,11 @@ class ProcessMaterialListViewModel : ViewModel()  {
     fun getList() {
         clear()
         materialList.addAll(materialDao.getAll())
-        dataList.addAll(processMaterialDao.getAll())
-        dataList.forEach {
-            getProcessingList(it)
-        }
-    }
-
-    fun getProcessingList(item : ProcessingMaterialData) {
-        val pData = DatabaseCallUtil.calculateProcessingData(item)
-        processDataList.add(pData)
+        processDataList.addAll(DatabaseCallUtil.getProcessMaterialList())
     }
 
     fun clear() {
         processDataList.clear()
-        dataList.clear()
         materialList.clear()
     }
 }

@@ -53,6 +53,7 @@ class ProcessingMaterialFragment : CommonFragment<FragmentProcessingMaterialList
             processingListViewModel.getList()
             withContext(Dispatchers.Main) {
                 processingListViewModel.isDataUpdatable = false
+                Log.e("왜지", processingListViewModel.processDataList.toString())
                 binding.processingMaterialRecyclerView.adapter?.notifyDataSetChanged()
             }
         }

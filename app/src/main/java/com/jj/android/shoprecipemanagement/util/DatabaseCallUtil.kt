@@ -9,6 +9,7 @@ import com.jj.android.shoprecipemanagement.dao.ProcessingMDetailDAO
 import com.jj.android.shoprecipemanagement.database.MaterialDataBase
 import com.jj.android.shoprecipemanagement.database.ProcessingMaterialDataBase
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingListData
+import com.jj.android.shoprecipemanagement.dto.MaterialData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMaterialData
 
 object DatabaseCallUtil {
@@ -23,6 +24,10 @@ object DatabaseCallUtil {
         processMDetailDao = db.processingMDetailDao()
         val materialDB = MaterialDataBase.getInstance(App.context())!!
         materialDao = materialDB.materialDao()
+    }
+
+    fun getMaterialList() : List<MaterialData> {
+        return materialDao.getAll()
     }
 
     //재귀형 호출이기 때문에 db는 주입형태로 처리하자...
@@ -64,4 +69,6 @@ object DatabaseCallUtil {
         }
         return list
     }
+
+
 }
