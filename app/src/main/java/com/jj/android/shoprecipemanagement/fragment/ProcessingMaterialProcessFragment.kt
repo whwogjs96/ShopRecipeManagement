@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.jj.android.shoprecipemanagement.R
 import com.jj.android.shoprecipemanagement.databinding.FragmentProcessingMaterialProcessBinding
-import com.jj.android.shoprecipemanagement.dialog.ProcessingMaterialProcessDialog
+import com.jj.android.shoprecipemanagement.dialog.MaterialSelectDialog
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingDetailListData
 import com.jj.android.shoprecipemanagement.eventbus.ProcessingMaterialModifyEvent
 import com.jj.android.shoprecipemanagement.result.ProcessingMaterialDialogResult
@@ -65,7 +65,7 @@ class ProcessingMaterialProcessFragment : CommonFragment<FragmentProcessingMater
                 Navigation.findNavController(v).popBackStack()
             }
             binding.materialAddButton -> {
-                val dialog = ProcessingMaterialProcessDialog(binding.root.context, 1)
+                val dialog = MaterialSelectDialog(binding.root.context, 1)
                 dialog.setResult(object : ProcessingMaterialDialogResult {
                     override fun finish(dataDetail: ProcessingDetailListData) {
                         CoroutineScope(Dispatchers.Default).launch {

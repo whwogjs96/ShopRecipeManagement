@@ -18,6 +18,9 @@ interface RecipeDAO {
     @Query("SELECT * FROM $TABLE_NAME WHERE recipeName=:name")
     fun findByName(name: String) : RecipeData?
 
+    @Query("SELECT * FROM $TABLE_NAME WHERE id=:id")
+    fun findById(id : Int) : RecipeData?
+
     @Insert
     fun insert(item: RecipeData)
 

@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.NumberFormatException
 
-class ProcessingMaterialProcessDialog(context: Context, val mode: Int, val dataDetail: ProcessingDetailListData? = null) :
+class MaterialSelectDialog(context: Context, val mode: Int, val dataDetail: ProcessingDetailListData? = null) :
     Dialog(context),
     View.OnClickListener,
     AdapterView.OnItemSelectedListener,
@@ -36,7 +36,6 @@ class ProcessingMaterialProcessDialog(context: Context, val mode: Int, val dataD
     lateinit var dialogResult : ProcessingMaterialDialogResult
     private var selectedPosition = -1
     var materialList = ArrayList<MaterialData>()
-    lateinit var materialDao: MaterialDAO
     var materialSize = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,9 +43,8 @@ class ProcessingMaterialProcessDialog(context: Context, val mode: Int, val dataD
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_processing_material_process, null, false)
         setContentView(binding.root)
         setCancelable(false)
-        initDAO(context)
         CoroutineScope(Dispatchers.Default).launch{
-            materialList.addAll(materialDao.getAll())
+            materialList.addAll(DatabaseCallUtil.getMaterialList())
             materialSize = materialList.size
             DatabaseCallUtil.getProcessMaterialList().forEach {
                 materialList.add(MaterialData(
@@ -58,7 +56,7 @@ class ProcessingMaterialProcessDialog(context: Context, val mode: Int, val dataD
             }
             withContext(Dispatchers.Main) {
                 binding.materialListSpinner.adapter = MaterialListSpinnerAdapter(context, materialList)
-                binding.materialListSpinner.onItemSelectedListener = this@ProcessingMaterialProcessDialog
+                binding.materialListSpinner.onItemSelectedListener = this@MaterialSelectDialog
                 setEvent()
                 modeSetting()
             }
@@ -96,11 +94,6 @@ class ProcessingMaterialProcessDialog(context: Context, val mode: Int, val dataD
                 dismiss()
             }
         }
-    }
-
-    fun initDAO(context: Context) {
-        val db = MaterialDataBase.getInstance(context)!!
-        materialDao = db.materialDao()
     }
 
     private fun modeSetting() {

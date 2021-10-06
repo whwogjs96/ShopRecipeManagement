@@ -6,17 +6,21 @@ import com.jj.android.shoprecipemanagement.application.App
 import com.jj.android.shoprecipemanagement.dao.MaterialDAO
 import com.jj.android.shoprecipemanagement.dao.ProcessingMDAO
 import com.jj.android.shoprecipemanagement.dao.ProcessingMDetailDAO
+import com.jj.android.shoprecipemanagement.dao.RecipeDAO
 import com.jj.android.shoprecipemanagement.database.MaterialDataBase
 import com.jj.android.shoprecipemanagement.database.ProcessingMaterialDataBase
+import com.jj.android.shoprecipemanagement.database.RecipeDataBase
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingListData
 import com.jj.android.shoprecipemanagement.dto.MaterialData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMaterialData
+import com.jj.android.shoprecipemanagement.dto.RecipeData
 
 object DatabaseCallUtil {
 
     private var materialDao: MaterialDAO
     private var processMaterialDao: ProcessingMDAO
     private var processMDetailDao: ProcessingMDetailDAO
+    private var recipeDao : RecipeDAO
 
     init {
         val db = ProcessingMaterialDataBase.getInstance(App.context())!!
@@ -24,6 +28,8 @@ object DatabaseCallUtil {
         processMDetailDao = db.processingMDetailDao()
         val materialDB = MaterialDataBase.getInstance(App.context())!!
         materialDao = materialDB.materialDao()
+        val recipeDb = RecipeDataBase.getInstance(App.context())!!
+        recipeDao = recipeDb.recipeDao()
     }
 
     fun getMaterialList() : List<MaterialData> {
@@ -71,4 +77,7 @@ object DatabaseCallUtil {
     }
 
 
+    fun getRecipeById(recipeId : Int): RecipeData? {
+        return recipeDao.findById(recipeId)
+    }
 }

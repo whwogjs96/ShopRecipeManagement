@@ -36,4 +36,16 @@ object BindingAdapter {
 
         recyclerView.adapter?.notifyDataSetChanged()
     }
+    @BindingAdapter("recipeDetailData")
+    @JvmStatic
+    fun recipeDetailListAttach(recyclerView: RecyclerView, dataList: ArrayList<ProcessingDetailListData>) {
+        if(recyclerView.adapter == null) {
+            val adapter =RecipeDetailListAdapter(recyclerView.context, dataList)
+            val helper = ItemTouchHelper(ItemTouchHelperCallback(adapter))
+            helper.attachToRecyclerView(recyclerView)
+            recyclerView.adapter = adapter
+        }
+
+        recyclerView.adapter?.notifyDataSetChanged()
+    }
 }
