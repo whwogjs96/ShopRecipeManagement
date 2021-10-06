@@ -23,10 +23,11 @@
     <color name="brightRed">#F39999</color>
     <color name="pastelPink">#FFBCD9</color>
     <color name="grayBlue">#4D2C4770</color>
+    <color name="livingCoral">#FF6F61</color>
 
     <color name="cancelButtonColor">#BF3333</color>
 
-
+    <color name="recipeDetailTitleColor">#EA298A</color>
     <color name="processingMaterialTitleColor">#6372C8</color>
     <color name="dialogTitleColor">#434343</color>
 
