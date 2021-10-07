@@ -53,47 +53,9 @@ class ProcessingDetailListViewModel: ViewModel() {
     }
 
     fun getDetailDataList(processingParentId: Int){
-        val list = processMDetailDao.findByParentId(processingParentId)
-        list.forEach { item ->
-            if (item.type == 1) {
-                val data = materialDao.findByName(item.materialName)
-                if(data != null) {
-                    dataAdd(
-                        ProcessingDetailListData(
-                            item.id,
-                            item.materialName,
-                            item.usage,
-                            data.unitPricePerGram,
-                            data.unitPricePerGram * item.usage,
-                            item.type,
-                            item.index
-                        )
-                    )
-                } else {
-                    processMDetailDao.delete(item)
-                }
-            } else {
-                val data = processMaterialDao.findByName(item.materialName)
-                if(data != null) {
-                    val addedItem = DatabaseCallUtil.calculateProcessingData(data)
-                    dataAdd(
-                            ProcessingDetailListData(
-                                    addedItem.id,
-                                    addedItem.name,
-                                    item.usage,
-                                    addedItem.unitPricePerGram,
-                                    addedItem.unitPricePerGram * item.usage,
-                                    item.type,
-                                    item.index
-                            )
-                    )
-                    //일단 여기에 혼합재료를 더하면 됩니다.
-                } else {
-                    processMDetailDao.delete(item)
-                }
-            }
+        DatabaseCallUtil.getProcessingDetailDataList(processingParentId).forEach { data ->
+            dataList.find { it.id == data.id } ?: dataAdd(data)
         }
-        dataList.sortBy { it.index }
     }
 
     fun processingDataSave(context: Context, name: String, resultAction : () -> Unit) {

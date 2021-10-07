@@ -8,6 +8,9 @@ import com.jj.android.shoprecipemanagement.dataclass.ProcessingDetailListData
 import com.jj.android.shoprecipemanagement.dto.RecipeData
 import com.jj.android.shoprecipemanagement.util.DatabaseCallUtil
 import com.muddzdev.styleabletoast.StyleableToast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class RecipeDetailViewModel : ViewModel() {
     val dataList = ArrayList<ProcessingDetailListData>()
@@ -25,5 +28,17 @@ class RecipeDetailViewModel : ViewModel() {
     fun dataModify(context : Context, position : Int, item : ProcessingDetailListData) {
         dataList[position] = item
         StyleableToast.makeText(context, "재료가 수정되었습니다.", Toast.LENGTH_SHORT, R.style.completeToastStyle).show()
+    }
+
+    fun recipeDataSave(context: Context, name: String, resultAction : () -> Unit) {
+        if(name.isNotEmpty()) {
+            if(recipeId == 0 ) { //추가
+                CoroutineScope(Dispatchers.Default).launch {
+                    DatabaseCallUtil.recipeAdd(context, name, dataList)
+                }
+            } else { //수정
+
+            }
+       }
     }
 }

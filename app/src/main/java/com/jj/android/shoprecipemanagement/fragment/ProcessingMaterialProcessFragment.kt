@@ -71,7 +71,6 @@ class ProcessingMaterialProcessFragment : CommonFragment<FragmentProcessingMater
                         CoroutineScope(Dispatchers.Default).launch {
                             val data = processingDetailListViewModel.getDataById()
                             CoroutineScope(Dispatchers.Main).launch {
-                                Log.e("뭐가 문제지?", dataDetail.toString())
                                 if(data != null && data.name == dataDetail.materialName && dataDetail.type == 2) {
                                     StyleableToast.makeText(context?: return@launch, "현재 재료는 재료로 추가할 수 없습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
                                 } else {
