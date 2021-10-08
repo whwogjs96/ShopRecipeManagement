@@ -11,20 +11,16 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.jj.android.shoprecipemanagement.R
 import com.jj.android.shoprecipemanagement.databinding.FragmentProcessingMaterialListBinding
+import com.jj.android.shoprecipemanagement.interfaceobj.DataRefresh
 import com.jj.android.shoprecipemanagement.viewmodel.ProcessMaterialListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ProcessingMaterialFragment : CommonFragment<FragmentProcessingMaterialListBinding>(R.layout.fragment_processing_material_list),  View.OnClickListener {
+class ProcessingMaterialFragment : CommonFragment<FragmentProcessingMaterialListBinding>(R.layout.fragment_processing_material_list),  View.OnClickListener, DataRefresh {
 
     private val processingListViewModel : ProcessMaterialListViewModel by activityViewModels()
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        processingListViewModel.initDAO(context)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,14 +44,18 @@ class ProcessingMaterialFragment : CommonFragment<FragmentProcessingMaterialList
         }
     }
 
-    fun dataRefresh() {
+    override fun dataLoading() {
         CoroutineScope(Dispatchers.Default).launch {
             processingListViewModel.getList()
             withContext(Dispatchers.Main) {
                 processingListViewModel.isDataUpdatable = false
-                Log.e("왜지", processingListViewModel.processDataList.toString())
                 binding.processingMaterialRecyclerView.adapter?.notifyDataSetChanged()
             }
         }
+    }
+    override fun dataRefresh() {
+        processingListViewModel.clear()
+        binding.processingMaterialRecyclerView.adapter?.notifyDataSetChanged()
+        super.dataRefresh()
     }
 }

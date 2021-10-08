@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jj.android.shoprecipemanagement.dto.MaterialData
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingDetailListData
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingListData
+import com.jj.android.shoprecipemanagement.dataclass.RecipeListData
 import com.jj.android.shoprecipemanagement.etcitem.ItemTouchHelperCallback
 
 object BindingAdapter {
@@ -21,6 +22,13 @@ object BindingAdapter {
     @JvmStatic
     fun processingMaterialListAttach(recyclerView: RecyclerView, dataList : ArrayList<ProcessingListData>) {
         if(recyclerView.adapter == null) recyclerView.adapter = MProcessingListAdapter(recyclerView.context, dataList)
+        recyclerView.adapter?.notifyDataSetChanged()
+    }
+
+    @BindingAdapter("recipeListData")
+    @JvmStatic
+    fun recipeListAttach(recyclerView: RecyclerView, dataList : ArrayList<RecipeListData>) {
+        if(recyclerView.adapter == null) recyclerView.adapter = RecipeListAdapter(recyclerView.context, dataList)
         recyclerView.adapter?.notifyDataSetChanged()
     }
 

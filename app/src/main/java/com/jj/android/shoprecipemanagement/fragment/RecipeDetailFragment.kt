@@ -30,6 +30,7 @@ class RecipeDetailFragment : CommonFragment<FragmentRecipeDetailBinding>(R.layou
 
         binding.cancelButton.setOnClickListener(this)
         binding.materialAddButton.setOnClickListener(this)
+        binding.addButton.setOnClickListener(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -55,6 +56,12 @@ class RecipeDetailFragment : CommonFragment<FragmentRecipeDetailBinding>(R.layou
                     }
                 })
                 dialog.show()
+            }
+            binding.addButton -> {
+                val recipeName = binding.recipeNameView.text
+                recipeDetailListViewModel.recipeDataSave(context?:return, recipeName.toString()) {
+                    Navigation.findNavController(v).popBackStack()
+                }
             }
         }
     }

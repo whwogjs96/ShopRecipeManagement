@@ -13,6 +13,7 @@ import com.jj.android.shoprecipemanagement.database.ProcessingMaterialDataBase
 import com.jj.android.shoprecipemanagement.database.RecipeDataBase
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingDetailListData
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingListData
+import com.jj.android.shoprecipemanagement.dataclass.RecipeListData
 import com.jj.android.shoprecipemanagement.dto.MaterialData
 import com.jj.android.shoprecipemanagement.dto.ProcessingMaterialData
 import com.jj.android.shoprecipemanagement.dto.RecipeData
@@ -70,7 +71,7 @@ object DatabaseCallUtil {
             } else {
                 val data = processMaterialDao.findByName(item.materialName)
                 if (data != null) {
-                    val addedItem = DatabaseCallUtil.calculateProcessingData(data)
+                    val addedItem = calculateProcessingData(data)
                     dataList.add(
                         ProcessingDetailListData(
                             addedItem.id,
@@ -93,9 +94,7 @@ object DatabaseCallUtil {
     }
 
     //재귀형 호출이기 때문에 db는 주입형태로 처리하자...
-    fun calculateProcessingData(
-        item: ProcessingMaterialData
-    ): ProcessingListData {
+    private fun calculateProcessingData(item: ProcessingMaterialData): ProcessingListData {
         //나중에 반환할 타입
         val resultData = ProcessingListData(item.id, item.name, 0.0, 0, 0.0)
         processMDetailDao.findByParentId(item.id).forEach { detailData ->
@@ -124,6 +123,36 @@ object DatabaseCallUtil {
         return resultData
     }
 
+    private fun calculateRecipeData(item: RecipeData) :RecipeListData {
+        val resultData = RecipeListData(item.id, item.recipeName, 0.0,0,0.0, 0)
+        recipeDetailDao.findByParentId(item.id).forEach {detailData ->
+            if (detailData.type == 1) {
+                resultData.usage += detailData.usage
+                val data = materialDao.findByName(detailData.materialInRecipeName)
+                if (data != null) {
+                    resultData.price += data.unitPricePerGram * detailData.usage
+                    resultData.materialCount++
+                } else {
+                    recipeDetailDao.delete(detailData)
+                }
+            } else {
+                val data = processMaterialDao.findByName(detailData.materialInRecipeName)
+                if (data != null) {
+                    val processData = calculateProcessingData(data)
+                    resultData.usage += detailData.usage
+                    resultData.price += processData.unitPricePerGram * detailData.usage
+                    resultData.materialCount++
+                } else {
+                    recipeDetailDao.delete(detailData)
+                }
+            }
+        }
+        if (resultData.usage != 0) resultData.apply {
+            unitPricePerGram = price / usage.toDouble()
+        }
+        return resultData
+    }
+
     fun getProcessMaterialList(): ArrayList<ProcessingListData> {
         val list = ArrayList<ProcessingListData>()
         processMaterialDao.getAll().forEach {
@@ -132,6 +161,13 @@ object DatabaseCallUtil {
         return list
     }
 
+    fun getRecipeList() : ArrayList<RecipeListData> {
+        val list = ArrayList<RecipeListData>()
+        recipeDao.getAll().forEach {
+            list.add(calculateRecipeData(it))
+        }
+        return list
+    }
 
     fun getRecipeById(recipeId: Int): RecipeData? {
         return recipeDao.findById(recipeId)
@@ -141,11 +177,11 @@ object DatabaseCallUtil {
         return recipeDao.findByName(name)
     }
 
-    fun recipeAdd(context: Context, name: String, dataList: ArrayList<ProcessingDetailListData>) {
+    fun recipeAdd(context: Context, name: String, dataList: ArrayList<ProcessingDetailListData>, resultAction : () -> Unit) {
         try {
             if(getRecipeByName(name) != null) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    StyleableToast.makeText(context, "재료명은 중복될 수 없습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                    StyleableToast.makeText(context, "레시피명은 중복될 수 없습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
                 }
             }
             recipeDao.insert(RecipeData(0, name))
@@ -166,6 +202,7 @@ object DatabaseCallUtil {
             }
             CoroutineScope(Dispatchers.Main).launch {
                 StyleableToast.makeText(context, "레시피 저장에 성공했습니다.", Toast.LENGTH_SHORT, R.style.completeToastStyle).show()
+                resultAction
             }
         } catch (e: Exception) {
             e.printStackTrace()

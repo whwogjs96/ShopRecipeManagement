@@ -34,7 +34,7 @@ class RecipeDetailViewModel : ViewModel() {
         if(name.isNotEmpty()) {
             if(recipeId == 0 ) { //추가
                 CoroutineScope(Dispatchers.Default).launch {
-                    DatabaseCallUtil.recipeAdd(context, name, dataList)
+                    DatabaseCallUtil.recipeAdd(context, name, dataList, resultAction)
                 }
             } else { //수정
 

@@ -19,6 +19,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@color/recyclerViewColor"
+            recipeListData="@{recipeViewModel.recipeDataList}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 

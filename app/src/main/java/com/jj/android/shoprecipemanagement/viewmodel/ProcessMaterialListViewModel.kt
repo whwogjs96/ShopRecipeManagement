@@ -16,19 +16,13 @@ import com.jj.android.shoprecipemanagement.util.DatabaseCallUtil
 //외부 혼합 재료 관련 데이터 처리
 class ProcessMaterialListViewModel : ViewModel()  {
 
-    lateinit var materialDao: MaterialDAO
     var processDataList = ArrayList<ProcessingListData>()
     var materialList = ArrayList<MaterialData>()
     var isDataUpdatable = false
 
-    fun initDAO(context: Context) {
-        val materialDB = MaterialDataBase.getInstance(context)!!
-        materialDao = materialDB.materialDao()
-    }
-
     fun getList() {
         clear()
-        materialList.addAll(materialDao.getAll())
+        materialList.addAll(DatabaseCallUtil.getMaterialList())
         processDataList.addAll(DatabaseCallUtil.getProcessMaterialList())
     }
 

@@ -15,6 +15,7 @@ import com.jj.android.shoprecipemanagement.eventbus.MaterialModifyEvent
 import com.jj.android.shoprecipemanagement.result.MaterialDialogResult
 import com.jj.android.shoprecipemanagement.viewmodel.MaterialListViewModel
 import com.jj.android.shoprecipemanagement.viewmodel.ProcessMaterialListViewModel
+import com.jj.android.shoprecipemanagement.viewmodel.RecipeListViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ class MaterialListFragment: CommonFragment<FragmentMaterialListBinding>(R.layout
 
     private val materialListViewModel : MaterialListViewModel by activityViewModels()
     private val processingListViewModel : ProcessMaterialListViewModel by activityViewModels()
+    private val recipeListViewModel : RecipeListViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,6 +78,7 @@ class MaterialListFragment: CommonFragment<FragmentMaterialListBinding>(R.layout
      */
     private fun fragmentUpdateNotify() {
         processingListViewModel.isDataUpdatable = true
+        recipeListViewModel.isDataUpdatable = true
     }
 
     /**
