@@ -7,11 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.jj.android.shoprecipemanagement.R
 import com.jj.android.shoprecipemanagement.databinding.FragmentRecipeDetailBinding
 import com.jj.android.shoprecipemanagement.dataclass.ProcessingDetailListData
 import com.jj.android.shoprecipemanagement.dialog.MaterialSelectDialog
+import com.jj.android.shoprecipemanagement.eventbus.DataInRecipeDeletedEvent
+import com.jj.android.shoprecipemanagement.eventbus.MaterialDeleteEvent
 import com.jj.android.shoprecipemanagement.eventbus.ProcessingMaterialModifyEvent
 import com.jj.android.shoprecipemanagement.result.ProcessingMaterialDialogResult
 import com.jj.android.shoprecipemanagement.viewmodel.RecipeDetailViewModel
@@ -19,18 +22,35 @@ import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class RecipeDetailFragment : CommonFragment<FragmentRecipeDetailBinding>(R.layout.fragment_recipe_detail), View.OnClickListener {
 
-    private val recipeDetailListViewModel : RecipeDetailViewModel by activityViewModels()
+    private val recipeDetailListViewModel : RecipeDetailViewModel by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        recipeDetailListViewModel.recipeId = arguments?.getInt("id", 0) ?:0
+        if(recipeDetailListViewModel.recipeId != 0) { //수정 모드
+            CoroutineScope(Dispatchers.Default).launch {
+                val data = recipeDetailListViewModel.getDataById()
+                recipeDetailListViewModel.getDetailDataList()
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.recipeDetailRecyclerView.adapter?.notifyDataSetChanged()
+                    binding.recipeNameView.setText(data?.recipeName?:"")
+                }
+            }
+            binding.addButton.text = getString(R.string.modify)
+            binding.recipeNameLayout.hint = getString(R.string.modifyRecipeName)
+        } else { //추가 모드
+            binding.addButton.text = getString(R.string.add)
+            binding.recipeNameLayout.hint = getString(R.string.addRecipeName)
+        }
         binding.cancelButton.setOnClickListener(this)
         binding.materialAddButton.setOnClickListener(this)
         binding.addButton.setOnClickListener(this)
+        binding.deleteButton.setOnClickListener(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,7 +80,17 @@ class RecipeDetailFragment : CommonFragment<FragmentRecipeDetailBinding>(R.layou
             binding.addButton -> {
                 val recipeName = binding.recipeNameView.text
                 recipeDetailListViewModel.recipeDataSave(context?:return, recipeName.toString()) {
-                    Navigation.findNavController(v).popBackStack()
+                    Navigation.findNavController(binding.root).popBackStack()
+                }
+            }
+            binding.deleteButton -> {
+                val c = context?:return
+                CoroutineScope(Dispatchers.Default).launch {
+                    if(recipeDetailListViewModel.recipeDelete(c)) {
+                        withContext(Dispatchers.Main) {
+                            Navigation.findNavController(binding.root).popBackStack()
+                        }
+                    }
                 }
             }
         }
@@ -72,5 +102,10 @@ class RecipeDetailFragment : CommonFragment<FragmentRecipeDetailBinding>(R.layou
             recipeDetailListViewModel.dataModify(context?: return@launch, event.position, event.dataDetail)
             binding.recipeDetailRecyclerView.adapter?.notifyItemChanged(event.position)
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun materialDeleteEvent(event : DataInRecipeDeletedEvent) {
+        recipeDetailListViewModel.deletedDataList.add(event.recipeDetailData)
     }
 }

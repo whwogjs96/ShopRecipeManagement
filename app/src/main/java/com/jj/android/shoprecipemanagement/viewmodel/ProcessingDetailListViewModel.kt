@@ -53,6 +53,7 @@ class ProcessingDetailListViewModel: ViewModel() {
     }
 
     fun getDetailDataList(processingParentId: Int){
+        dataList.clear()
         DatabaseCallUtil.getProcessingDetailDataList(processingParentId).forEach { data ->
             dataList.find { it.id == data.id } ?: dataAdd(data)
         }

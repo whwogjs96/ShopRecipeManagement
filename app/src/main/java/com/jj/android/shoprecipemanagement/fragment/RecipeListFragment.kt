@@ -50,7 +50,6 @@ class RecipeListFragment : CommonFragment<FragmentRecipeListBinding>(R.layout.fr
     override fun dataLoading() {
         CoroutineScope(Dispatchers.Default).launch {
             recipeListViewModel.getList()
-            Log.e("데이터는 오나?", recipeListViewModel.recipeDataList.toString())
             withContext(Dispatchers.Main) {
                 recipeListViewModel.isDataUpdatable = false
                 binding.recipeListRecyclerView.adapter?.notifyDataSetChanged()

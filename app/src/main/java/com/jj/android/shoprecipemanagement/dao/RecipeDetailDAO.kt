@@ -12,7 +12,7 @@ interface RecipeDetailDAO {
     }
 
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE processingMId=:id")
+    @Query("SELECT * FROM $TABLE_NAME WHERE recipeId=:id")
     fun findByParentId(id: Int) : List<RecipeDetailData>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE id=:id")

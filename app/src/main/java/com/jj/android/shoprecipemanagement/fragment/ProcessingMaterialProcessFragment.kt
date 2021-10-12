@@ -59,6 +59,12 @@ class ProcessingMaterialProcessFragment : CommonFragment<FragmentProcessingMater
         binding.addButton.setOnClickListener(this)
         binding.deleteButton.setOnClickListener(this)
     }
+
+    override fun onDestroy() {
+        Log.e("뭐지?", processingDetailListViewModel.dataList.toString())
+        super.onDestroy()
+
+    }
     override fun onClick(v: View?) {
         when(v) {
             binding.cancelButton -> {

@@ -4,19 +4,19 @@ import androidx.room.*
 
 @Entity(
         tableName = "recipeDetailTable",
-        indices = [Index(value = arrayOf("processingMId"))],
+        indices = [Index(value = arrayOf("recipeId"))],
         foreignKeys = [
             ForeignKey(
                     entity = RecipeData::class,
                     parentColumns = arrayOf("id"),
-                    childColumns = arrayOf("processingMId"),
+                    childColumns = arrayOf("recipeId"),
                     onDelete = ForeignKey.CASCADE
             )
         ]
 )
 data class RecipeDetailData(
         @PrimaryKey(autoGenerate = true) val id: Int = 0,
-        @ColumnInfo(name = "processingMId") var processingMId: Int,
+        @ColumnInfo(name = "recipeId") var recipeId: Int,
         @ColumnInfo(name = "materialInRecipeName") var materialInRecipeName : String,
         @ColumnInfo(name = "type") var type : Int,
         @ColumnInfo(name = "usage") var usage : Int,

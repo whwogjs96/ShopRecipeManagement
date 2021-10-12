@@ -39,9 +39,8 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/recipeMaterialCount"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
                 android:textColor="@color/textColor"
@@ -49,6 +48,8 @@
                 android:gravity="center"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
                 android:text="재료 n번 사용"
                 android:textSize="12dp" />
 

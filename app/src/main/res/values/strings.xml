@@ -14,6 +14,7 @@
 
     <string name="addMaterialName">추가할 재료명</string>
     <string name="addRecipeName">추가할 레시피명</string>
+    <string name="modifyRecipeName">수정할 레시피명</string>
     <string name="addRecipe">레시피 추가</string>
     <string name="modifyMaterialName">수정할 재료명</string>
     <string name="addMaterialUnitPrice">재료 단가</string>
