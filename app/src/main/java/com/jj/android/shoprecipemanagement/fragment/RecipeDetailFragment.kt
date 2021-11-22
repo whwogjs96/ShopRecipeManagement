@@ -43,9 +43,11 @@ class RecipeDetailFragment : CommonFragment<FragmentRecipeDetailBinding>(R.layou
             }
             binding.addButton.text = getString(R.string.modify)
             binding.recipeNameLayout.hint = getString(R.string.modifyRecipeName)
+            binding.deleteButton.visibility = View.VISIBLE
         } else { //추가 모드
             binding.addButton.text = getString(R.string.add)
             binding.recipeNameLayout.hint = getString(R.string.addRecipeName)
+            binding.deleteButton.visibility = View.GONE
         }
         binding.cancelButton.setOnClickListener(this)
         binding.materialAddButton.setOnClickListener(this)
@@ -78,9 +80,13 @@ class RecipeDetailFragment : CommonFragment<FragmentRecipeDetailBinding>(R.layou
                 dialog.show()
             }
             binding.addButton -> {
-                val recipeName = binding.recipeNameView.text
-                recipeDetailListViewModel.recipeDataSave(context?:return, recipeName.toString()) {
-                    Navigation.findNavController(binding.root).popBackStack()
+                val recipeName = binding.recipeNameView.text.toString()
+                if(recipeName.isNotEmpty()) {
+                    recipeDetailListViewModel.recipeDataSave(context?:return, recipeName) {
+                        Navigation.findNavController(binding.root).popBackStack()
+                    }
+                } else {
+                    StyleableToast.makeText(context?:return, "레시피명을 입력해주세요.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
                 }
             }
             binding.deleteButton -> {

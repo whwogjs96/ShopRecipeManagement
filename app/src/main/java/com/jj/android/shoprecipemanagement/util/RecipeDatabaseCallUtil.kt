@@ -120,8 +120,8 @@ object RecipeDatabaseCallUtil {
             }
             CoroutineScope(Dispatchers.Main).launch {
                 StyleableToast.makeText(context, "레시피 저장에 성공했습니다.", Toast.LENGTH_SHORT, R.style.completeToastStyle).show()
+                resultAction()
             }
-            resultAction()
         } catch (e: Exception) {
             e.printStackTrace()
             CoroutineScope(Dispatchers.Main).launch {

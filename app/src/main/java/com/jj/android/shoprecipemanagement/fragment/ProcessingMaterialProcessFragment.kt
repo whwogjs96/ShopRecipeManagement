@@ -50,9 +50,11 @@ class ProcessingMaterialProcessFragment : CommonFragment<FragmentProcessingMater
             }
             binding.addButton.text = getString(R.string.modify)
             binding.processingMaterialNameLayout.hint = getString(R.string.modifyMaterialName)
+            binding.deleteButton.visibility = View.VISIBLE
         } else {
             binding.addButton.text = getString(R.string.add)
             binding.processingMaterialNameLayout.hint = getString(R.string.addMaterialName)
+            binding.deleteButton.visibility = View.GONE
         }
         binding.cancelButton.setOnClickListener(this)
         binding.materialAddButton.setOnClickListener(this)

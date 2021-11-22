@@ -1,6 +1,7 @@
 package com.jj.android.shoprecipemanagement.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
@@ -8,7 +9,7 @@ import com.jj.android.shoprecipemanagement.R
 import com.jj.android.shoprecipemanagement.adapter.FragmentCollectionAdapter
 import com.jj.android.shoprecipemanagement.databinding.FragmentMainBinding
 
-class MainFragment :CommonFragment<FragmentMainBinding>(R.layout.fragment_main) {
+class MainFragment :CommonFragment<FragmentMainBinding>(R.layout.fragment_main), View.OnClickListener {
 
     companion object{
         const val RECIPE_ADD = 0
@@ -31,5 +32,18 @@ class MainFragment :CommonFragment<FragmentMainBinding>(R.layout.fragment_main) 
         TabLayoutMediator(binding.tabLayout, binding.fragmentBodyPager) {tab, position ->
             tab.text = tabNameList[position]
         }.attach()
+
+        binding.sideMenuButton.setOnClickListener(this)
     }
+
+    override fun onClick(v: View?) {
+        when(v) {
+            binding.sideMenuButton -> {
+                //이걸 이용해서 엑셀 관련 팝업창 띄워주면 될 듯
+                binding.fragmentBodyPager.currentItem
+            }
+        }
+    }
+
+
 }

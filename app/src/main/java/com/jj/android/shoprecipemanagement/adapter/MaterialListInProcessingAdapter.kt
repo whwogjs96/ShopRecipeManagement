@@ -73,7 +73,7 @@ class MaterialListInProcessingAdapter(
                     }
                     CoroutineScope(Dispatchers.Main).launch {
                         dataDetailList.removeAt(position)
-                        StyleableToast.makeText(context, "제거되었습니다.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                        StyleableToast.makeText(context, "제거되었습니다.", Toast.LENGTH_SHORT, R.style.completeToastStyle).show()
                         notifyItemRemoved(position)
                     }
                 } catch (e: Exception) {
