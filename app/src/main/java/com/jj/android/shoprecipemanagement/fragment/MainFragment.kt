@@ -1,8 +1,8 @@
 package com.jj.android.shoprecipemanagement.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.jj.android.shoprecipemanagement.R
@@ -11,13 +11,6 @@ import com.jj.android.shoprecipemanagement.databinding.FragmentMainBinding
 
 class MainFragment :CommonFragment<FragmentMainBinding>(R.layout.fragment_main), View.OnClickListener {
 
-    companion object{
-        const val RECIPE_ADD = 0
-        const val COST_ADD = 1
-        const val PR_COST_ADD = 2
-        const val EXCEL_SAVE = 3
-        const val EXCEL_ROAD = 4
-    }
 
     private val tabList: MutableList<Fragment> = ArrayList()
     private var tabNameList : ArrayList<String> = ArrayList<String>().apply {
@@ -41,6 +34,12 @@ class MainFragment :CommonFragment<FragmentMainBinding>(R.layout.fragment_main),
             binding.sideMenuButton -> {
                 //이걸 이용해서 엑셀 관련 팝업창 띄워주면 될 듯
                 binding.fragmentBodyPager.currentItem
+                val popup = PopupMenu(requireContext(), v)
+                val menuLayout = if(binding.fragmentBodyPager.currentItem == 0) R.menu.cost_excel_menu
+                else if(binding.fragmentBodyPager.currentItem == 1) R.menu.process_material_excel_menu
+                else R.menu.recipe_excel_menu
+                requireActivity().menuInflater.inflate(menuLayout, popup.menu)
+                popup.show()
             }
         }
     }
