@@ -1,29 +1,28 @@
 package com.jj.android.shoprecipemanagement.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.forEach
-import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.jj.android.shoprecipemanagement.R
 import com.jj.android.shoprecipemanagement.adapter.FragmentCollectionAdapter
 import com.jj.android.shoprecipemanagement.databinding.FragmentMainBinding
-import com.jj.android.shoprecipemanagement.util.DatabaseCallUtil
+import com.jj.android.shoprecipemanagement.util.ExcelDataOutputUtil
+import com.muddzdev.styleabletoast.StyleableToast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.apache.poi.ss.usermodel.Sheet
-import org.apache.poi.ss.usermodel.Workbook
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.*
 
 class MainFragment : CommonFragment<FragmentMainBinding>(R.layout.fragment_main), View.OnClickListener, MenuItem.OnMenuItemClickListener {
 
-
-    private val tabList: MutableList<Fragment> = ArrayList()
     private var tabNameList: ArrayList<String> = ArrayList<String>().apply {
         add("원가표")
         add("혼합 재료")
@@ -31,14 +30,76 @@ class MainFragment : CommonFragment<FragmentMainBinding>(R.layout.fragment_main)
     }
     private val WRITE_REQUEST_CODE = 43
 
+    private lateinit var costExcelSaveLauncher: ActivityResultLauncher<Intent>
+    private lateinit var processCostExcelSaveLauncher: ActivityResultLauncher<Intent>
+    private lateinit var recipeExcelSave: ActivityResultLauncher<Intent>
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.fragmentBodyPager.adapter = FragmentCollectionAdapter(this)
         TabLayoutMediator(binding.tabLayout, binding.fragmentBodyPager) { tab, position ->
             tab.text = tabNameList[position]
         }.attach()
-
+        setActivityResultLauncher()
         binding.sideMenuButton.setOnClickListener(this)
+    }
+
+    private fun setActivityResultLauncher() {
+        costExcelSaveLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                it.data?.also { data ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val outputStream = data.data?.let { uri -> activity?.contentResolver?.openOutputStream(uri) }
+                            ExcelDataOutputUtil.saveMaterialData(requireContext(), outputStream)
+                        } catch (e: Exception) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                StyleableToast.makeText(requireContext(), "파일 확장자가 제대로 지정되었는지 확인해주세요.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                            }
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+        }
+
+        processCostExcelSaveLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK){
+                it.data?.also { data ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val outputStream = data.data?.let { uri -> activity?.contentResolver?.openOutputStream(uri) }
+                            //ExcelDataOutputUtil.saveMaterialData(requireContext(), outputStream)
+                            //여기 코드 추가
+                        } catch (e: Exception) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                StyleableToast.makeText(requireContext(), "파일 확장자가 제대로 지정되었는지 확인해주세요.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                            }
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+        }
+
+        recipeExcelSave = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK){
+                it.data?.also { data ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val outputStream = data.data?.let { uri -> activity?.contentResolver?.openOutputStream(uri) }
+                            //ExcelDataOutputUtil.saveMaterialData(requireContext(), outputStream)
+                            //여기 코드 추가
+                        } catch (e: Exception) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                StyleableToast.makeText(requireContext(), "파일 확장자가 제대로 지정되었는지 확인해주세요.", Toast.LENGTH_SHORT, R.style.errorToastStyle).show()
+                            }
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onClick(v: View?) {
@@ -47,9 +108,7 @@ class MainFragment : CommonFragment<FragmentMainBinding>(R.layout.fragment_main)
                 //이걸 이용해서 엑셀 관련 팝업창 띄워주면 될 듯
                 binding.fragmentBodyPager.currentItem
                 val popup = PopupMenu(requireContext(), v)
-                val menuLayout = if (binding.fragmentBodyPager.currentItem == 0) R.menu.cost_excel_menu
-                else if (binding.fragmentBodyPager.currentItem == 1) R.menu.process_material_excel_menu
-                else R.menu.recipe_excel_menu
+                val menuLayout = getCurrentPopUpMenu()
                 requireActivity().menuInflater.inflate(menuLayout, popup.menu)
                 popup.menu.forEach {
                     it.setOnMenuItemClickListener(this)
@@ -65,57 +124,29 @@ class MainFragment : CommonFragment<FragmentMainBinding>(R.layout.fragment_main)
 
             }
             R.id.costExcelSave -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val list = DatabaseCallUtil.getMaterialList()
-                    val workBook: Workbook = XSSFWorkbook()
-                    val sheet: Sheet = workBook.createSheet()
-                    var row = sheet.createRow(0)
-                    var cell = row.createCell(0)
-
-                    cell.setCellValue("재료 이름")
-                    cell = row.createCell(1)
-                    cell.setCellValue("단가")
-                    cell = row.createCell(2)
-                    cell.setCellValue("중량")
-                    cell = row.createCell(3)
-                    cell.setCellValue("1g당 단가")
-                    for (index in list.indices) {
-                        row = sheet.createRow(index + 1)
-                        cell.setCellValue(list[index].name)
-                        cell = row.createCell(1)
-                        cell.setCellValue(list[index].unitPrice.toString())
-                        cell = row.createCell(2)
-                        cell.setCellValue(list[index].weight.toString())
-                        cell = row.createCell(3)
-                        cell.setCellValue(list[index].unitPricePerGram.toString())
-                    }
-                    try {
-                        val fileName = "test.xlsx" // download url
-                        val mimeType = fileName.substring(fileName.indexOf(".") + 1, fileName.length)
-                        var intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
-                        intent.addCategory(Intent.CATEGORY_OPENABLE)
-                        intent.type = "*/$mimeType"
-                        intent.putExtra(Intent.EXTRA_TITLE, fileName)
-                        startActivityForResult(intent, WRITE_REQUEST_CODE)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
+                costExcelSaveLauncher.launch(ExcelDataOutputUtil.getSavedViewIntent())
             }
             R.id.processCostExcelLoad -> {
 
             }
             R.id.processCostExcelSave -> {
-
+                processCostExcelSaveLauncher.launch(ExcelDataOutputUtil.getSavedViewIntent())
             }
             R.id.recipeExcelLoad -> {
 
             }
             R.id.recipeExcelSave -> {
-
+                recipeExcelSave.launch(ExcelDataOutputUtil.getSavedViewIntent())
             }
         }
         return false
     }
 
+    private fun getCurrentPopUpMenu() : Int {
+        return when (binding.fragmentBodyPager.currentItem) {
+            0 -> R.menu.cost_excel_menu
+            1 -> R.menu.process_material_excel_menu
+            else -> R.menu.recipe_excel_menu
+        }
+    }
 }
