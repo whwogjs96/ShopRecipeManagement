@@ -69,7 +69,7 @@ class MainFragment : CommonFragment<FragmentMainBinding>(R.layout.fragment_main)
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             val outputStream = data.data?.let { uri -> activity?.contentResolver?.openOutputStream(uri) }
-                            //ExcelDataOutputUtil.saveMaterialData(requireContext(), outputStream)
+                            ExcelDataOutputUtil.saveProcessingMaterialData(requireContext(), outputStream)
                             //여기 코드 추가
                         } catch (e: Exception) {
                             CoroutineScope(Dispatchers.Main).launch {
@@ -88,7 +88,7 @@ class MainFragment : CommonFragment<FragmentMainBinding>(R.layout.fragment_main)
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             val outputStream = data.data?.let { uri -> activity?.contentResolver?.openOutputStream(uri) }
-                            //ExcelDataOutputUtil.saveMaterialData(requireContext(), outputStream)
+                            ExcelDataOutputUtil.saveRecipeData(requireContext(), outputStream)
                             //여기 코드 추가
                         } catch (e: Exception) {
                             CoroutineScope(Dispatchers.Main).launch {
@@ -124,19 +124,19 @@ class MainFragment : CommonFragment<FragmentMainBinding>(R.layout.fragment_main)
 
             }
             R.id.costExcelSave -> {
-                costExcelSaveLauncher.launch(ExcelDataOutputUtil.getSavedViewIntent())
+                costExcelSaveLauncher.launch(ExcelDataOutputUtil.getSavedViewIntent("cost.xlsx"))
             }
             R.id.processCostExcelLoad -> {
 
             }
             R.id.processCostExcelSave -> {
-                processCostExcelSaveLauncher.launch(ExcelDataOutputUtil.getSavedViewIntent())
+                processCostExcelSaveLauncher.launch(ExcelDataOutputUtil.getSavedViewIntent("processingCost.xlsx"))
             }
             R.id.recipeExcelLoad -> {
 
             }
             R.id.recipeExcelSave -> {
-                recipeExcelSave.launch(ExcelDataOutputUtil.getSavedViewIntent())
+                recipeExcelSave.launch(ExcelDataOutputUtil.getSavedViewIntent("recipe.xlsx"))
             }
         }
         return false
